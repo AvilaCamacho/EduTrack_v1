@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.LoginController" styleClass="login-container">
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+    </padding>
+
+    <Label text="EduTrack" styleClass="title">
+        <font>
+            <Font name="System Bold" size="32.0"/>
+        </font>
+    </Label>
+
+    <Label text="Sistema de Gestión Educativa" styleClass="subtitle">
+        <font>
+            <Font size="14.0"/>
+        </font>
+    </Label>
+
+    <VBox spacing="15.0" maxWidth="350.0">
+        <padding>
+            <Insets top="20.0"/>
+        </padding>
+
+        <VBox spacing="5.0">
+            <Label text="Usuario:" styleClass="field-label"/>
+            <TextField fx:id="usernameField" promptText="Ingrese su usuario" styleClass="text-field"/>
+        </VBox>
+
+        <VBox spacing="5.0">
+            <Label text="Contraseña:" styleClass="field-label"/>
+            <PasswordField fx:id="passwordField" promptText="Ingrese su contraseña" styleClass="text-field"/>
+        </VBox>
+
+        <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin" maxWidth="Infinity" styleClass="primary-button">
+            <font>
+                <Font name="System Bold" size="14.0"/>
+            </font>
+        </Button>
+
+        <Label fx:id="messageLabel" styleClass="message-label" wrapText="true"/>
+    </VBox>
+</VBox>

@@ -1,0 +1,61 @@
+# Compiled class files
+*.class
+target/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+.mvn/
+mvn.cmd
+mvnw
+mvnw.cmd
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Log files
+*.log
+
+# Oracle Wallet files - IMPORTANT: Do not commit sensitive wallet files
+src/main/resources/wallet/*.sso
+src/main/resources/wallet/*.p12
+src/main/resources/wallet/*.jks
+src/main/resources/wallet/tnsnames.ora
+src/main/resources/wallet/sqlnet.ora
+src/main/resources/wallet/ojdbc.properties
+
+# Keep the wallet directory but not its contents
+!src/main/resources/wallet/README.md
+
+# Database configuration with credentials
+# Uncomment the line below if you want to exclude database.properties
+# src/main/resources/database.properties
