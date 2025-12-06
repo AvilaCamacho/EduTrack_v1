@@ -51,10 +51,17 @@ public class Main extends Application {
                 String tnsAlias = prop.getProperty("db.tns.alias");
 
                 // Get the absolute path to the wallet directory
-                String resourcePath = getClass().getResource("/wallet").getPath();
-                File walletDir = new File(resourcePath);
+                File walletDir = null;
+                try {
+                    java.net.URL resourceUrl = getClass().getResource("/wallet");
+                    if (resourceUrl != null) {
+                        walletDir = new File(resourceUrl.getPath());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Wallet resource not found in classpath: " + e.getMessage());
+                }
                 
-                if (!walletDir.exists()) {
+                if (walletDir == null || !walletDir.exists()) {
                     // If wallet doesn't exist in resources, use the configured path
                     walletDir = new File(walletPath);
                 }
@@ -68,8 +75,8 @@ public class Main extends Application {
 
                 System.out.println("Database configuration loaded successfully");
             } else {
-                System.err.println("database.properties file not found. Using default configuration.");
-                // Set default values or prompt user for configuration
+                System.err.println("database.properties file not found.");
+                System.err.println("Please create database.properties in src/main/resources/ with database credentials.");
             }
         } catch (Exception e) {
             System.err.println("Error loading database configuration: " + e.getMessage());

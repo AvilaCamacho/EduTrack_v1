@@ -156,11 +156,6 @@ public class TeacherDashboardController {
         dialog.setHeaderText("Seleccione un alumno para agregar al grupo");
         dialog.setContentText("Alumno:");
 
-        // Custom converter to show student names
-        dialog.getItems().forEach(student -> {
-            // Students will be shown by their full name in the dropdown
-        });
-
         Optional<User> result = dialog.showAndWait();
         result.ifPresent(student -> {
             if (groupStudentDAO.addStudentToGroup(selectedGroup.getId(), student.getId())) {
