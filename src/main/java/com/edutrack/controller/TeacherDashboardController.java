@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 
 import java.sql.Date;
 import java.util.List;
@@ -42,6 +43,12 @@ public class TeacherDashboardController {
     @FXML
     private Button takeAttendanceButton;
 
+    @FXML
+    private HBox studentActions; // contenedor de acciones de estudiantes
+
+    @FXML
+    private Label noSelectionLabel;
+
     private GroupDAO groupDAO;
     private GroupStudentDAO groupStudentDAO;
     private AttendanceDAO attendanceDAO;
@@ -57,21 +64,77 @@ public class TeacherDashboardController {
 
     @FXML
     private void initialize() {
+        System.out.println("TeacherDashboardController: initialize called");
+
         currentUser = SessionManager.getInstance().getCurrentUser();
-        welcomeLabel.setText("Bienvenido, " + currentUser.getFullName());
+        if (currentUser != null) {
+            if (welcomeLabel != null) {
+                welcomeLabel.setText("Bienvenido, " + currentUser.getFullName());
+            } else {
+                System.err.println("welcomeLabel es null en TeacherDashboardController");
+            }
+        } else {
+            if (welcomeLabel != null) welcomeLabel.setText("Bienvenido");
+        }
 
-        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        if (studentNameColumn != null) {
+            studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        } else {
+            System.err.println("studentNameColumn es null en TeacherDashboardController");
+        }
 
-        groupListView.getSelectionModel().selectedItemProperty().addListener(
-            (observable, oldValue, newValue) -> loadStudentsForGroup(newValue)
-        );
+        // Start with actions hidden
+        if (studentActions != null) {
+            studentActions.setVisible(false);
+            studentActions.setManaged(false);
+        } else {
+            System.err.println("studentActions es null en TeacherDashboardController");
+        }
+
+        if (noSelectionLabel != null) {
+            noSelectionLabel.setVisible(true);
+        } else {
+            System.err.println("noSelectionLabel es null en TeacherDashboardController");
+        }
+
+        if (groupListView != null) {
+            groupListView.getSelectionModel().selectedItemProperty().addListener(
+                    (observable, oldValue, newValue) -> onGroupSelectionChanged(newValue)
+            );
+        } else {
+            System.err.println("groupListView es null en TeacherDashboardController");
+        }
 
         loadGroups();
     }
 
+    private void onGroupSelectionChanged(Group selectedGroup) {
+        if (selectedGroup == null) {
+            studentsTable.getItems().clear();
+            studentActions.setVisible(false);
+            studentActions.setManaged(false);
+            noSelectionLabel.setVisible(true);
+            deleteGroupButton.setDisable(true);
+            return;
+        }
+
+        // Enable group-related actions
+        studentActions.setVisible(true);
+        studentActions.setManaged(true);
+        noSelectionLabel.setVisible(false);
+        deleteGroupButton.setDisable(false);
+
+        loadStudentsForGroup(selectedGroup);
+    }
+
     private void loadGroups() {
+        if (currentUser == null) return;
         List<Group> groups = groupDAO.getGroupsByTeacher(currentUser.getId());
         groupListView.getItems().setAll(groups);
+
+        // disable delete/create buttons if no groups exist
+        boolean hasGroups = !groups.isEmpty();
+        deleteGroupButton.setDisable(!hasGroups);
     }
 
     private void loadStudentsForGroup(Group group) {
@@ -82,6 +145,9 @@ public class TeacherDashboardController {
 
         List<GroupStudent> students = groupStudentDAO.getStudentsByGroup(group.getId());
         studentsTable.getItems().setAll(students);
+
+        // disable removeStudentButton if no students
+        removeStudentButton.setDisable(students.isEmpty());
     }
 
     @FXML
@@ -105,7 +171,7 @@ public class TeacherDashboardController {
                 Group newGroup = new Group();
                 newGroup.setName(name.trim());
                 newGroup.setDescription(description);
-                newGroup.setTeacherId(currentUser.getId());
+                if (currentUser != null) newGroup.setTeacherId(currentUser.getId());
 
                 if (groupDAO.createGroup(newGroup)) {
                     showInfo("Grupo creado exitosamente");

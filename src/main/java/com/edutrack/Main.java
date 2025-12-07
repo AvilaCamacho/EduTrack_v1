@@ -29,6 +29,9 @@ public class Main extends Application {
             primaryStage.setTitle("EduTrack - Sistema de Gestión Educativa");
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
+            primaryStage.setWidth(1000);
+            primaryStage.setHeight(700);
+            primaryStage.centerOnScreen();
             primaryStage.show();
 
         } catch (Exception e) {
@@ -60,7 +63,7 @@ public class Main extends Application {
                 } catch (Exception e) {
                     System.err.println("Wallet resource not found in classpath: " + e.getMessage());
                 }
-                
+
                 if (walletDir == null || !walletDir.exists()) {
                     // If wallet doesn't exist in resources, use the configured path
                     walletDir = new File(walletPath);

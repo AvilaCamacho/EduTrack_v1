@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.TeacherDashboardController" styleClass="dashboard-container">
-    
+
     <top>
         <VBox styleClass="header">
             <padding>
@@ -68,7 +68,10 @@
                     </placeholder>
                 </TableView>
 
-                <HBox spacing="10.0">
+                <!-- Label que indica que no hay selección (usado por el controlador) -->
+                <Label fx:id="noSelectionLabel" text="Seleccione un grupo para ver acciones" styleClass="muted-label" />
+
+                <HBox spacing="10.0" fx:id="studentActions">
                     <Button fx:id="addStudentButton" text="Agregar Alumno" onAction="#handleAddStudent" styleClass="primary-button"/>
                     <Button fx:id="removeStudentButton" text="Eliminar Alumno" onAction="#handleRemoveStudent" styleClass="danger-button"/>
                     <Region HBox.hgrow="ALWAYS"/>
