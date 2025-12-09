@@ -1,0 +1,134 @@
+/* Estilos para StudentDashboard - paleta sin blanco (grises, azules suaves) */
+/* Evitar color blanco; reemplazar por tonos de gris */
+
+.dashboard-container {
+    -fx-background-color: #f2f4f6; /* gris muy claro en caso de necesitar fondo */
+    -fx-font-family: "Inter", "Segoe UI", System;
+}
+
+.topbar {
+    -fx-background-color: linear-gradient(#243447, #1b2b36);
+    -fx-padding: 12 20 12 20;
+    -fx-alignment: center-left;
+    -fx-border-radius: 0 0 8 8;
+}
+
+.brand {
+    -fx-text-fill: #E6F0FA; /* ligeramente claro */
+    -fx-font-weight: bold;
+}
+
+.welcome {
+    -fx-text-fill: #BFD8F6;
+    -fx-font-size: 12px;
+}
+
+.top-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E6F0FA;
+    -fx-border-color: transparent;
+    -fx-padding: 6 12 6 12;
+}
+
+.top-btn.danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFA3A3;
+}
+
+.main-column {
+    -fx-background-color: transparent;
+}
+
+.page-title {
+    -fx-text-fill: #2b3b45;
+    -fx-font-weight: 700;
+}
+
+.pane .title {
+    -fx-text-fill: #2b3b45;
+    -fx-font-weight: 600;
+}
+
+.list-view {
+    -fx-background-color: #e9eef6; /* sustituto del blanco */
+    -fx-border-color: #dbe6f3;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.table-view {
+    -fx-background-color: #e9eef6;
+    -fx-border-color: #dbe6f3;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.section-title {
+    -fx-text-fill: #3a4b55;
+    -fx-font-weight: 700;
+}
+
+.primary {
+    -fx-background-color: #359EFF; /* azul vivo */
+    -fx-text-fill: #0b2430;
+    -fx-padding: 8 14 8 14;
+    -fx-background-radius: 8;
+    -fx-font-weight: 600;
+}
+
+.accent {
+    -fx-background-color: #2C7AA6;
+    -fx-text-fill: #EAF6FF;
+    -fx-background-radius: 8;
+}
+
+.block {
+    -fx-max-width: 100%;
+    -fx-pref-width: 100%;
+}
+
+.sidebar {
+    -fx-background-color: #2b3b45; /* oscuro */
+    -fx-padding: 16;
+    -fx-background-radius: 8;
+}
+
+.profile-card {
+    -fx-background-color: #23343b;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+}
+
+.name {
+    -fx-text-fill: #E6F0FA;
+    -fx-font-weight: 700;
+}
+
+.muted {
+    -fx-text-fill: #AFC6D9;
+}
+
+.small {
+    -fx-font-size: 11px;
+}
+
+.percent {
+    -fx-text-fill: #1B7ED6;
+    -fx-font-weight: 700;
+}
+
+.muted.small {
+    -fx-text-fill: #9BB0C6;
+}
+
+/* Botones suaves */
+.button {
+    -fx-background-radius: 8;
+}
+
+/* Evitar blanco en inputs/areas */
+.text-area, .text-field {
+    -fx-background-color: #f3f6f8;
+    -fx-border-color: #d6e3ef;
+    -fx-background-radius: 6;
+}

@@ -1,69 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.StudentDashboardController" styleClass="dashboard-container">
-    <!-- stylesheets removed; loaded desde Java si aplica -->
+<!-- Actualizado a JavaFX 21; Diseño tipo blog/panel con Accordion para no mostrar todo a la vez -->
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.StudentDashboardController" styleClass="dashboard-container">
+    <!-- Registrar hoja de estilos -->
+    <stylesheets>
+        <String fx:value="/css/student-dashboard.css" />
+    </stylesheets>
+
+    <!-- Carga de css: se recomienda registrar la hoja desde el código (Main) o desde el Scene -->
 
     <top>
-        <VBox styleClass="header">
+        <HBox styleClass="topbar" spacing="12.0">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                <Insets top="12.0" bottom="12.0" left="20.0" right="20.0" />
             </padding>
-            <Label text="Panel del Alumno" styleClass="header-title">
-                <font>
-                    <Font name="System Bold" size="24.0"/>
-                </font>
-            </Label>
-            <Label fx:id="welcomeLabel" styleClass="header-subtitle">
-                <font>
-                    <Font size="14.0"/>
-                </font>
-            </Label>
-        </VBox>
+
+            <VBox alignment="CENTER_LEFT">
+                <Label text="EduTrack" styleClass="brand">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <Label fx:id="welcomeLabel" text="Bienvenido/a" styleClass="welcome" />
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox spacing="8.0" alignment="CENTER_RIGHT">
+                <Button text="Perfil" styleClass="top-btn" fx:id="profileBtn" />
+                <Button text="Cerrar sesión" styleClass="top-btn danger" fx:id="logoutBtn" />
+            </HBox>
+        </HBox>
     </top>
 
     <center>
         <HBox spacing="20.0">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                <Insets top="20.0" bottom="20.0" left="20.0" right="20.0" />
             </padding>
 
-            <!-- Groups Section -->
-            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
-                <Label text="Mis Grupos" styleClass="section-title">
+            <!-- Columna principal (contenido tipo blog) -->
+            <VBox spacing="16.0" HBox.hgrow="ALWAYS" styleClass="main-column">
+                <Label text="Panel de Estudiante" styleClass="page-title">
                     <font>
-                        <Font name="System Bold" size="16.0"/>
+                        <Font size="22.0" />
                     </font>
                 </Label>
 
-                <ListView fx:id="groupListView" VBox.vgrow="ALWAYS" styleClass="list-view">
-                    <placeholder>
-                        <Label text="No estás inscrito en ningún grupo"/>
-                    </placeholder>
-                </ListView>
+                <!-- Accordion para mostrar secciones bajo demanda -->
+                <Accordion fx:id="mainAccordion" VBox.vgrow="ALWAYS">
+                    <!-- Grupos -->
+                    <TitledPane text="Mis Grupos" styleClass="pane">
+                        <content>
+                        <VBox spacing="8.0">
+                            <ListView fx:id="groupListView" prefHeight="200.0" styleClass="list-view">
+                                <placeholder>
+                                    <Label text="No estás inscrito en ningún grupo" />
+                                </placeholder>
+                            </ListView>
+                            <HBox spacing="8.0">
+                                <Button text="Ver grupo" styleClass="primary" fx:id="viewGroupBtn" />
+                                <Button text="Unirme / Salir" fx:id="toggleGroupBtn" />
+                            </HBox>
+                        </VBox>
+                        </content>
+                    </TitledPane>
+
+                    <!-- Asistencia -->
+                    <TitledPane text="Asistencia" styleClass="pane">
+                        <content>
+                        <VBox spacing="8.0">
+                            <TableView fx:id="attendanceTable" prefHeight="220.0" styleClass="table-view">
+                                <columns>
+                                    <TableColumn fx:id="dateColumn" text="Fecha" prefWidth="180.0" />
+                                    <TableColumn fx:id="statusColumn" text="Estado" prefWidth="120.0" />
+                                    <TableColumn fx:id="noteColumn" text="Notas" prefWidth="260.0" />
+                                </columns>
+                                <placeholder>
+                                    <Label text="No hay registros de asistencia" />
+                                </placeholder>
+                            </TableView>
+
+                            <HBox spacing="8.0" alignment="CENTER_LEFT">
+                                <Button text="Registrar asistencia" styleClass="primary" fx:id="recordAttendanceBtn" />
+                                <Button text="Exportar historial" fx:id="exportHistoryBtn" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="Porcentaje de asistencia:" />
+                                <Label fx:id="attendancePercentLabel" text="0%" styleClass="percent" />
+                            </HBox>
+                        </VBox>
+                        </content>
+                    </TitledPane>
+
+                    <!-- Historial / Reportes -->
+                    <TitledPane text="Historial y Reportes" styleClass="pane">
+                        <content>
+                        <VBox spacing="8.0">
+                            <Label text="Resumen" styleClass="section-title" />
+                            <TextArea fx:id="historyTextArea" prefRowCount="6" wrapText="true" />
+                            <HBox spacing="8.0">
+                                <Button text="Calcular porcentaje" styleClass="accent" fx:id="calcPercentBtn" />
+                                <Button text="Limpiar" fx:id="clearHistoryBtn" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="Asistencia media del grupo:" />
+                                <Label fx:id="groupAverageLabel" text="--" styleClass="percent" />
+                            </HBox>
+                        </VBox>
+                        </content>
+                    </TitledPane>
+
+                </Accordion>
             </VBox>
 
-            <!-- Attendance Section -->
-            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
-                <Label text="Mi Asistencia" styleClass="section-title">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
-                </Label>
+            <!-- Barra lateral con info rápida (tipo tarjeta) -->
+            <VBox spacing="12.0" prefWidth="320.0" styleClass="sidebar">
+                <HBox styleClass="profile-card" spacing="12.0">
+                    <ImageView fitWidth="64.0" fitHeight="64.0" image="@/images/EXAMPLE.png" />
+                    <VBox>
+                        <Label fx:id="studentNameLabel" text="Nombre Apellido" styleClass="name" />
+                        <Label fx:id="studentEmailLabel" text="correo@ejemplo.com" styleClass="muted" />
+                    </VBox>
+                </HBox>
 
-                <TableView fx:id="attendanceTable" VBox.vgrow="ALWAYS" styleClass="table-view">
-                    <columns>
-                        <TableColumn fx:id="dateColumn" text="Fecha" prefWidth="150.0"/>
-                        <TableColumn fx:id="statusColumn" text="Estado" prefWidth="150.0"/>
-                    </columns>
-                    <placeholder>
-                        <Label text="No hay registros de asistencia"/>
-                    </placeholder>
-                </TableView>
+                <VBox spacing="8.0" styleClass="quick-actions">
+                    <Label text="Acciones rápidas" styleClass="section-title" />
+                    <Button text="Abrir pase de lista" styleClass="block primary" fx:id="openRollBtn" />
+                    <Button text="Ver calendario" styleClass="block" fx:id="openCalendarBtn" />
+                    <Button text="Contactar profesor" styleClass="block" fx:id="contactTeacherBtn" />
+                </VBox>
+
+                <Region VBox.vgrow="ALWAYS" />
+
+                <Label text="© 2025 EduTrack" styleClass="muted small" />
             </VBox>
         </HBox>
     </center>

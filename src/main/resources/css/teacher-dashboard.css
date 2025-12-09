@@ -1,0 +1,76 @@
+/* Estilos para TeacherDashboard - mismas reglas de paleta (evitar blanco) */
+.dashboard-container {
+    -fx-font-family: "Inter", "Segoe UI", System;
+}
+
+.header {
+    -fx-background-color: linear-gradient(#253444, #1b2b36);
+    -fx-padding: 20;
+}
+
+.header-title {
+    -fx-text-fill: #EAF6FF;
+    -fx-font-weight: 700;
+}
+
+.header-subtitle {
+    -fx-text-fill: #BFD8F6;
+}
+
+.section {
+    -fx-background-color: #edf4fb;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+}
+
+.section-title {
+    -fx-text-fill: #2b3b45;
+    -fx-font-weight: 700;
+}
+
+.list-view {
+    -fx-background-color: #e9eef6;
+    -fx-border-color: #dbe6f3;
+    -fx-background-radius: 8;
+}
+
+.table-view {
+    -fx-background-color: #e9eef6;
+    -fx-border-color: #dbe6f3;
+    -fx-background-radius: 8;
+}
+
+.primary-button {
+    -fx-background-color: #359EFF;
+    -fx-text-fill: #0b2430;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18 10 18;
+    -fx-font-weight: 700;
+}
+
+.danger-button {
+    -fx-background-color: #E66B6B;
+    -fx-text-fill: #1b1b1b;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18 10 18;
+}
+
+.success-button {
+    -fx-background-color: #3AC57F;
+    -fx-text-fill: #072016;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18 10 18;
+}
+
+.large {
+    -fx-font-size: 14px;
+}
+
+.muted-label {
+    -fx-text-fill: #7E96A8;
+}
+
+.muted-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4B6A7A;
+}
