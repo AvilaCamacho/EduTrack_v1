@@ -132,11 +132,7 @@
           AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
           styleClass="top-bar" spacing="16" alignment="CENTER_LEFT" prefHeight="96">
         <children>
-            <Label text="Panel del Maestro" styleClass="title-large">
-                <padding>
-                    <Insets top="12" right="0" bottom="12" left="24"/>
-                </padding>
-            </Label>
+            <Label text="Panel del Maestro" styleClass="title-large" padding="12 0 12 24"/>
             <Label text="Bienvenido, Prof. Juan García" styleClass="subtitle-muted"/>
         </children>
     </HBox>
