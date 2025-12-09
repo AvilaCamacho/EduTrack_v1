@@ -105,8 +105,9 @@ public class LoginController {
 
             stage.setScene(scene);
             stage.setTitle("EduTrack - " + (user.getUserType() == User.UserType.TEACHER ? "Maestro" : "Alumno"));
-            stage.setWidth(1100); // ampliar ventana
-            stage.setHeight(700);
+            stage.setResizable(true);
+            // Maximizar la ventana para que la pantalla se auto acomode
+            stage.setMaximized(true);
             stage.centerOnScreen();
             stage.show();
 
@@ -118,11 +119,11 @@ public class LoginController {
 
     private void showError(String message) {
         messageLabel.setText(message);
-        messageLabel.setStyle("-fx-text-fill: #b23b3b; -fx-font-weight: 600;");
+        messageLabel.setStyle("-fx-text-fill: #c62b2b; -fx-font-weight: 700;");
     }
 
     private void showSuccess(String message) {
         messageLabel.setText(message);
-        messageLabel.setStyle("-fx-text-fill: #22577a; -fx-font-weight: 600;");
+        messageLabel.setStyle("-fx-text-fill: #0b66a3; -fx-font-weight: 700;");
     }
 }

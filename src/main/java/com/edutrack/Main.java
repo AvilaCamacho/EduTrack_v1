@@ -28,9 +28,9 @@ public class Main extends Application {
 
             primaryStage.setTitle("EduTrack - Sistema de Gestión Educativa");
             primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
-            primaryStage.setWidth(1000);
-            primaryStage.setHeight(700);
+            primaryStage.setResizable(true); // permitir redimensionar
+            primaryStage.setWidth(900); // tamaño inicial razonable
+            primaryStage.setHeight(600);
             primaryStage.centerOnScreen();
             primaryStage.show();
 

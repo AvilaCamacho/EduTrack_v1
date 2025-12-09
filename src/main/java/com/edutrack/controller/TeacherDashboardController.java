@@ -3,16 +3,20 @@ package com.edutrack.controller;
 import com.edutrack.database.*;
 import com.edutrack.model.*;
 import com.edutrack.util.SessionManager;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TeacherDashboardController {
 
@@ -52,6 +56,9 @@ public class TeacherDashboardController {
     @FXML
     private Label noSelectionLabel;
 
+    @FXML
+    private Button generateAttendanceButton; // nuevo botón
+
     private GroupDAO groupDAO;
     private GroupStudentDAO groupStudentDAO;
     private AttendanceDAO attendanceDAO;
@@ -82,8 +89,21 @@ public class TeacherDashboardController {
 
         if (studentNameColumn != null) {
             studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+            // Make table column resize to fill available space for responsive layout
+            if (studentsTable != null) {
+                studentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            }
+            studentNameColumn.setMaxWidth(Double.MAX_VALUE);
         } else {
             System.err.println("studentNameColumn es null en TeacherDashboardController");
+        }
+
+        // Ensure group list expands
+        if (groupListView != null) {
+            groupListView.setPrefWidth(Double.MAX_VALUE);
+            groupListView.setFixedCellSize(Region.USE_COMPUTED_SIZE);
+        } else {
+            System.err.println("groupListView es null en TeacherDashboardController");
         }
 
         // Start with actions hidden
@@ -327,6 +347,16 @@ public class TeacherDashboardController {
         HBox content = new HBox(10);
         content.setPrefSize(700, 400);
 
+        // Panel izquierdo: filtros + lista de fechas
+        javafx.scene.layout.VBox leftPanel = new javafx.scene.layout.VBox(10);
+
+        DatePicker dpFilterStart = new DatePicker();
+        DatePicker dpFilterEnd = new DatePicker();
+        Button btnFilter = new Button("Filtrar");
+
+        HBox filterBox = new HBox(10);
+        filterBox.getChildren().addAll(new Label("Inicio:"), dpFilterStart, new Label("Fin:"), dpFilterEnd, btnFilter);
+
         ListView<java.sql.Date> datesList = new ListView<>();
         datesList.getItems().addAll(dates);
 
@@ -340,6 +370,24 @@ public class TeacherDashboardController {
                 else setText(sdf.format(new java.util.Date(item.getTime())));
             }
         });
+
+        btnFilter.setOnAction(e -> {
+            java.time.LocalDate s = dpFilterStart.getValue();
+            java.time.LocalDate en = dpFilterEnd.getValue();
+            datesList.getItems().clear();
+            if (s == null && en == null) {
+                datesList.getItems().addAll(dates);
+                return;
+            }
+            for (java.sql.Date d : dates) {
+                java.time.LocalDate ld = d.toLocalDate();
+                boolean afterOrEq = (s == null) || (!ld.isBefore(s));
+                boolean beforeOrEq = (en == null) || (!ld.isAfter(en));
+                if (afterOrEq && beforeOrEq) datesList.getItems().add(d);
+            }
+        });
+
+        leftPanel.getChildren().addAll(filterBox, datesList);
 
         TableView<Attendance> attendanceTable = new TableView<>();
         TableColumn<Attendance, String> nameCol = new TableColumn<>("Alumno");
@@ -373,9 +421,115 @@ public class TeacherDashboardController {
             }
         }
 
-        content.getChildren().addAll(datesList, attendanceTable);
+        content.getChildren().addAll(leftPanel, attendanceTable);
         dialog.getDialogPane().setContent(content);
         dialog.showAndWait();
+    }
+
+    @FXML
+    private void handleGenerateAttendanceGrade() {
+        Group selectedGroup = groupListView.getSelectionModel().getSelectedItem();
+        if (selectedGroup == null) {
+            showError("Por favor seleccione un grupo");
+            return;
+        }
+
+        // diálogo con dos DatePicker
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Generar Calificación de Asistencia");
+        dialog.setHeaderText("Seleccione rango de fechas");
+
+        DatePicker dpStart = new DatePicker();
+        DatePicker dpEnd = new DatePicker();
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Fecha inicio:"), 0, 0);
+        grid.add(dpStart, 1, 0);
+        grid.add(new Label("Fecha fin:"), 0, 1);
+        grid.add(dpEnd, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        ButtonType generateType = new ButtonType("Generar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(generateType, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == generateType) {
+            java.time.LocalDate start = dpStart.getValue();
+            java.time.LocalDate end = dpEnd.getValue();
+            if (start == null || end == null) {
+                showError("Debe seleccionar ambas fechas");
+                return;
+            }
+            if (start.isAfter(end)) {
+                showError("La fecha de inicio no puede ser posterior a la fecha fin");
+                return;
+            }
+
+            // Convertir a java.sql.Date
+            Date sqlStart = Date.valueOf(start);
+            Date sqlEnd = Date.valueOf(end);
+
+            // Llamar al DAO para generar reporte
+            List<com.edutrack.model.AttendanceReportEntry> report = attendanceDAO.generateAttendanceReport(selectedGroup.getId(), sqlStart, sqlEnd);
+
+            if (report == null || report.isEmpty()) {
+                showInfo("No hay días de clase en el rango seleccionado o no hay alumnos");
+                return;
+            }
+
+            // mostrar resultados en tabla
+            Dialog<Void> resDialog = new Dialog<>();
+            resDialog.setTitle("Resultado: Calificación de Asistencia");
+            resDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
+
+            TableView<com.edutrack.model.AttendanceReportEntry> table = new TableView<>();
+            TableColumn<com.edutrack.model.AttendanceReportEntry, String> nameCol = new TableColumn<>("Alumno");
+            nameCol.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+            nameCol.setPrefWidth(300);
+
+            TableColumn<com.edutrack.model.AttendanceReportEntry, Integer> presentCol = new TableColumn<>("Presentes");
+            presentCol.setCellValueFactory(new PropertyValueFactory<>("presentDays"));
+            presentCol.setPrefWidth(100);
+
+            TableColumn<com.edutrack.model.AttendanceReportEntry, Integer> totalCol = new TableColumn<>("Días totales");
+            totalCol.setCellValueFactory(new PropertyValueFactory<>("totalDays"));
+            totalCol.setPrefWidth(100);
+
+            TableColumn<com.edutrack.model.AttendanceReportEntry, String> percCol = new TableColumn<>("% Asistencia");
+            percCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.format("%.1f %%", c.getValue().getPercentage())));
+            percCol.setPrefWidth(120);
+
+            table.getColumns().addAll(nameCol, presentCol, totalCol, percCol);
+            table.getItems().setAll(report);
+
+            Button exportBtn = new Button("Exportar CSV");
+            exportBtn.setOnAction(e -> {
+                try {
+                    String csv = report.stream()
+                            .map(r -> String.format("\"%s\",%d,%d,%.1f", r.getStudentName(), r.getPresentDays(), r.getTotalDays(), r.getPercentage()))
+                            .collect(Collectors.joining("\n"));
+                    // Guardar en archivo sencillo en el directorio del usuario
+                    String userHome = System.getProperty("user.home");
+                    String path = userHome + "\\attendance_report.csv";
+                    try (FileWriter fw = new FileWriter(path)) {
+                        fw.write("Alumno,Presentes,TotalDias,Porcentaje\n");
+                        fw.write(csv);
+                    }
+                    showInfo("Exportado CSV: " + path);
+                } catch (IOException ex) {
+                    showError("Error exportando CSV: " + ex.getMessage());
+                }
+            });
+
+            VBox content = new VBox(10);
+            content.setPrefSize(600, 400);
+            content.getChildren().addAll(table, exportBtn);
+
+            resDialog.getDialogPane().setContent(content);
+            resDialog.showAndWait();
+        }
     }
 
     private void showError(String message) {

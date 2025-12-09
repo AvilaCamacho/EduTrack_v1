@@ -26,13 +26,21 @@
     </top>
 
     <center>
-        <HBox spacing="20.0">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-            </padding>
+        <!-- Usamos GridPane con columnas porcentuales para responsividad -->
+        <GridPane HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="30.0" />
+                <ColumnConstraints percentWidth="70.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS" />
+            </rowConstraints>
 
-            <!-- Groups Section -->
-            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
+            <!-- Left: Groups Section -->
+            <VBox spacing="10.0" styleClass="section" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
                 <Label text="Mis Grupos" styleClass="section-title">
                     <font>
                         <Font name="System Bold" size="16.0"/>
@@ -46,13 +54,16 @@
                 </ListView>
 
                 <HBox spacing="10.0">
-                    <Button fx:id="createGroupButton" text="Crear Grupo" onAction="#handleCreateGroup" styleClass="primary-button"/>
-                    <Button fx:id="deleteGroupButton" text="Eliminar Grupo" onAction="#handleDeleteGroup" styleClass="danger-button"/>
+                    <Button fx:id="createGroupButton" text="Crear Grupo" onAction="#handleCreateGroup" styleClass="primary-button large"/>
+                    <Button fx:id="deleteGroupButton" text="Eliminar Grupo" onAction="#handleDeleteGroup" styleClass="danger-button large"/>
                 </HBox>
             </VBox>
 
-            <!-- Students Section -->
-            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
+            <!-- Right: Students Section -->
+            <VBox spacing="10.0" styleClass="section" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
                 <Label text="Alumnos del Grupo" styleClass="section-title">
                     <font>
                         <Font name="System Bold" size="16.0"/>
@@ -71,14 +82,16 @@
                 <!-- Label que indica que no hay selección (usado por el controlador) -->
                 <Label fx:id="noSelectionLabel" text="Seleccione un grupo para ver acciones" styleClass="muted-label" />
 
-                <HBox spacing="10.0" fx:id="studentActions">
-                    <Button fx:id="addStudentButton" text="Agregar Alumno" onAction="#handleAddStudent" styleClass="primary-button"/>
-                    <Button fx:id="removeStudentButton" text="Eliminar Alumno" onAction="#handleRemoveStudent" styleClass="danger-button"/>
+                <HBox spacing="16.0" fx:id="studentActions">
+                    <Button fx:id="addStudentButton" text="Agregar Alumno" onAction="#handleAddStudent" styleClass="primary-button large"/>
+                    <Button fx:id="removeStudentButton" text="Eliminar Alumno" onAction="#handleRemoveStudent" styleClass="danger-button large"/>
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button fx:id="viewHistoryButton" text="Historial" onAction="#handleViewHistory" styleClass="muted-button" />
-                    <Button fx:id="takeAttendanceButton" text="Pasar Lista" onAction="#handleTakeAttendance" styleClass="success-button"/>
+                    <Button fx:id="takeAttendanceButton" text="Pasar Lista" onAction="#handleTakeAttendance" styleClass="success-button large"/>
+                    <!-- Nuevo botón para generar calificación de asistencia -->
+                    <Button fx:id="generateAttendanceButton" text="Generar Calificación" onAction="#handleGenerateAttendanceGrade" styleClass="primary-button large" />
                 </HBox>
             </VBox>
-        </HBox>
+        </GridPane>
     </center>
 </BorderPane>

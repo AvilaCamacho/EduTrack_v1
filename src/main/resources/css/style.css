@@ -7,8 +7,8 @@
 /* Login Container */
 .login-container {
     -fx-background-color: linear-gradient(to bottom right, #eef2f6 0%, #dde4ea 100%);
-    -fx-min-width: 900px;
-    -fx-min-height: 600px;
+    -fx-min-width: 600px; /* reducir para permitir reflow en pantallas pequeñas */
+    -fx-min-height: 400px;
 }
 
 /* Card */
@@ -178,4 +178,47 @@
 /* Small utility */
 .centered-label {
     -fx-alignment: CENTER;
+}
+
+/* Additional button size and stronger hover/pressed visuals */
+.primary-button.large {
+    -fx-padding: 14px 26px;
+    -fx-font-size: 15px;
+    -fx-min-width: 140px;
+    -fx-background-radius: 10px;
+}
+
+.danger-button.large {
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-min-width: 120px;
+    -fx-background-radius: 10px;
+}
+
+.success-button.large {
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-min-width: 120px;
+    -fx-background-radius: 10px;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(11,38,59,0.28), 14, 0, 0, 6);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 2);
+    -fx-translate-y: 0px;
+}
+
+/* Slight white overlay on hover for contrast */
+.primary-button:hover, .success-button:hover, .danger-button:hover {
+    -fx-background-insets: 0, 1;
+    -fx-background-color: linear-gradient(to bottom, derive(#0b66a3,20%) 0%, derive(#075985,-6%) 100%);
+}
+
+/* Focus glow */
+.button:focused {
+    -fx-effect: dropshadow(gaussian, rgba(11,102,164,0.28), 18, 0, 0, 8);
 }
