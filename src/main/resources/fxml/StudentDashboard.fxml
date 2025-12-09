@@ -2,61 +2,68 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.StudentDashboardController" styleClass="dashboard-root">
-
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.StudentDashboardController" styleClass="dashboard-container">
+    
     <top>
-        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="header">
+        <VBox styleClass="header">
             <padding>
-                <Insets top="12.0" bottom="12.0" left="18.0" right="18.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
-            <ImageView fx:id="logoImage" fitHeight="48" preserveRatio="true" />
-            <VBox>
-                <Label text="Panel del Alumno" styleClass="header-title">
-                    <font>
-                        <Font name="System Bold" size="20.0"/>
-                    </font>
-                </Label>
-                <Label fx:id="welcomeLabel" styleClass="header-subtitle">
-                    <font>
-                        <Font size="12.0"/>
-                    </font>
-                </Label>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS" />
-        </HBox>
+            <Label text="Panel del Alumno" styleClass="header-title">
+                <font>
+                    <Font name="System Bold" size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="welcomeLabel" styleClass="header-subtitle">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+        </VBox>
     </top>
 
-    <left>
-        <VBox spacing="12" styleClass="sidebar" prefWidth="260">
-            <padding>
-                <Insets top="8.0" bottom="8.0" left="12.0" right="12.0" />
-            </padding>
-            <Label text="Mis Grupos" styleClass="section-title" />
-            <ListView fx:id="groupListView" VBox.vgrow="ALWAYS" styleClass="list-view" />
-        </VBox>
-    </left>
-
     <center>
-        <VBox spacing="12" styleClass="content-area">
+        <HBox spacing="20.0">
             <padding>
-                <Insets top="12.0" bottom="12.0" left="20.0" right="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
-            <Label text="Mi Asistencia" styleClass="section-title" />
 
-            <TableView fx:id="attendanceTable" VBox.vgrow="ALWAYS" styleClass="table-view">
-                <columns>
-                    <TableColumn fx:id="dateColumn" text="Fecha" prefWidth="180.0" />
-                    <TableColumn fx:id="statusColumn" text="Estado" prefWidth="180.0" />
-                </columns>
-                <placeholder>
-                    <Label text="No hay registros de asistencia" />
-                </placeholder>
-            </TableView>
-        </VBox>
+            <!-- Groups Section -->
+            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
+                <Label text="Mis Grupos" styleClass="section-title">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                </Label>
+
+                <ListView fx:id="groupListView" VBox.vgrow="ALWAYS" styleClass="list-view">
+                    <placeholder>
+                        <Label text="No estás inscrito en ningún grupo"/>
+                    </placeholder>
+                </ListView>
+            </VBox>
+
+            <!-- Attendance Section -->
+            <VBox spacing="10.0" HBox.hgrow="ALWAYS" styleClass="section">
+                <Label text="Mi Asistencia" styleClass="section-title">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                </Label>
+
+                <TableView fx:id="attendanceTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                    <columns>
+                        <TableColumn fx:id="dateColumn" text="Fecha" prefWidth="150.0"/>
+                        <TableColumn fx:id="statusColumn" text="Estado" prefWidth="150.0"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No hay registros de asistencia"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+        </HBox>
     </center>
-
 </BorderPane>

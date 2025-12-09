@@ -72,9 +72,4 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    @Override
-    public String toString() {
-        return (fullName != null && !fullName.trim().isEmpty()) ? fullName : (username != null ? username : "Usuario " + id);
-    }
 }

@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -24,33 +23,13 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
             primaryStage.setTitle("EduTrack - Sistema de Gestión Educativa");
             primaryStage.setScene(scene);
-
-            // Force window to 1600x900, but allow resizing within that exact frame as base
-            primaryStage.setResizable(true);
-            primaryStage.setMinWidth(1600);
-            primaryStage.setMinHeight(900);
-            primaryStage.setWidth(1600);
-            primaryStage.setHeight(900);
-            primaryStage.setMaximized(false); // don't maximize (keep taskbar visible)
-
+            primaryStage.setResizable(false);
             primaryStage.show();
-
-            // If the login ImageView exists, bind its fitWidth/Height to window size for responsiveness
-            try {
-                ImageView hero = (ImageView) root.lookup("#heroImage");
-                if (hero != null) {
-                    // Limit the image to portion of the window while preserving ratio
-                    hero.fitWidthProperty().bind(scene.widthProperty().multiply(0.55));
-                    hero.fitHeightProperty().bind(scene.heightProperty().multiply(0.85));
-                }
-            } catch (Exception ignored) {
-                // no-op if lookup fails
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +60,7 @@ public class Main extends Application {
                 } catch (Exception e) {
                     System.err.println("Wallet resource not found in classpath: " + e.getMessage());
                 }
-
+                
                 if (walletDir == null || !walletDir.exists()) {
                     // If wallet doesn't exist in resources, use the configured path
                     walletDir = new File(walletPath);
