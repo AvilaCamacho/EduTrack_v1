@@ -3,6 +3,7 @@ package com.edutrack.controller;
 import com.edutrack.database.UserDAO;
 import com.edutrack.model.User;
 import com.edutrack.util.SessionManager;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,6 +36,28 @@ public class LoginController {
     @FXML
     private void initialize() {
         messageLabel.setText("");
+        loginButton.setDisable(true);
+
+        // Enable login button only when both fields have text
+        usernameField.textProperty().addListener(this::onInputChanged);
+        passwordField.textProperty().addListener(this::onInputChanged);
+
+        // allow pressing Enter in password field to submit
+        passwordField.setOnAction(e -> {
+            if (!loginButton.isDisable()) {
+                handleLogin();
+            }
+        });
+    }
+
+    private void onInputChanged(ObservableValue<? extends String> obs, String oldVal, String newVal) {
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
+        loginButton.setDisable(username.isEmpty() || password.isEmpty());
+        // Clear message when user types
+        if (!messageLabel.getText().isEmpty()) {
+            messageLabel.setText("");
+        }
     }
 
     @FXML
@@ -51,6 +74,7 @@ public class LoginController {
 
         if (user != null) {
             SessionManager.getInstance().setCurrentUser(user);
+            showSuccess("Inicio de sesión exitoso");
             openDashboard(user);
         } else {
             showError("Usuario o contraseña incorrectos");
@@ -59,28 +83,47 @@ public class LoginController {
 
     private void openDashboard(User user) {
         try {
-            String fxmlFile = user.getUserType() == User.UserType.TEACHER 
-                ? "/fxml/TeacherDashboard.fxml" 
+            String fxmlFile = user.getUserType() == User.UserType.TEACHER
+                ? "/fxml/TeacherDashboard.fxml"
                 : "/fxml/StudentDashboard.fxml";
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            java.net.URL resource = getClass().getResource(fxmlFile);
+            if (resource == null) {
+                showError("Archivo FXML no encontrado: " + fxmlFile);
+                System.err.println("Resource not found for: " + fxmlFile);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            java.net.URL css = getClass().getResource("/css/style.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            else System.err.println("CSS not found: /css/style.css");
+
             stage.setScene(scene);
             stage.setTitle("EduTrack - " + (user.getUserType() == User.UserType.TEACHER ? "Maestro" : "Alumno"));
+            stage.setResizable(true);
+            // Maximizar la ventana para que la pantalla se auto acomode
+            stage.setMaximized(true);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Error al cargar el panel de control");
+            showError("Error al cargar el panel de control: " + e.getMessage());
         }
     }
 
     private void showError(String message) {
         messageLabel.setText(message);
-        messageLabel.setStyle("-fx-text-fill: #e74c3c;");
+        messageLabel.setStyle("-fx-text-fill: #c62b2b; -fx-font-weight: 700;");
+    }
+
+    private void showSuccess(String message) {
+        messageLabel.setText(message);
+        messageLabel.setStyle("-fx-text-fill: #0b66a3; -fx-font-weight: 700;");
     }
 }
