@@ -59,4 +59,9 @@ public class Group {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+    @Override
+    public String toString() {
+        return (name != null && !name.trim().isEmpty()) ? name : "Grupo " + id;
+    }
 }

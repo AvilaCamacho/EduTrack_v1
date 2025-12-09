@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.DashboardViewController" prefWidth="800" prefHeight="480">
+    <top>
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="header">
+            <padding>
+                <Insets top="12.0" bottom="12.0" left="18.0" right="18.0" />
+            </padding>
+            <ImageView fx:id="logoImage" fitHeight="48" preserveRatio="true" />
+            <VBox>
+                <Label text="Panel del Alumno" styleClass="header-title" />
+                <Label fx:id="welcomeLabel" styleClass="header-subtitle" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="12">
+            <padding>
+                <Insets top="12.0" right="12.0" bottom="12.0" left="12.0" />
+            </padding>
+            <HBox fx:id="metricsBox" spacing="16" />
+        </VBox>
+    </center>
+</BorderPane>

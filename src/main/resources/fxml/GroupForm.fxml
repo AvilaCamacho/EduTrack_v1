@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edutrack.controller.GroupFormController" prefWidth="700" prefHeight="480">
+    <children>
+        <VBox spacing="12" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" styleClass="content-area">
+            <padding>
+                <Insets top="12" right="16" bottom="12" left="16"/>
+            </padding>
+            <Label fx:id="formTitle" text="Agregar Nuevo Grupo" styleClass="page-title" />
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50" />
+                    <ColumnConstraints percentWidth="50" />
+                </columnConstraints>
+
+                <Label text="Nombre De Grupo" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="nameField" promptText="Ej: 2F Redes Digitales" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="text-field" />
+
+                <Label text="Descripción (opcional)" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <TextArea fx:id="descField" prefRowCount="4" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="text-field" />
+
+                <Label text="Tutor Asignado" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <TextField fx:id="tutorField" promptText="Ej: Omar Javier" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="text-field" />
+
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Cancelar" onAction="#handleCancel" styleClass="secondary-button" />
+                <Button text="Guardar grupo" onAction="#handleSave" styleClass="primary-button" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
