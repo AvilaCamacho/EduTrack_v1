@@ -44,6 +44,9 @@ public class TeacherDashboardController {
     private Button takeAttendanceButton;
 
     @FXML
+    private Button viewHistoryButton;
+
+    @FXML
     private HBox studentActions; // contenedor de acciones de estudiantes
 
     @FXML
@@ -299,6 +302,80 @@ public class TeacherDashboardController {
             });
             showInfo("Asistencia registrada exitosamente");
         }
+    }
+
+    @FXML
+    private void handleViewHistory() {
+        Group selectedGroup = groupListView.getSelectionModel().getSelectedItem();
+        if (selectedGroup == null) {
+            showError("Por favor seleccione un grupo");
+            return;
+        }
+
+        // Obtener fechas disponibles
+        List<java.sql.Date> dates = attendanceDAO.getAttendanceDatesByGroup(selectedGroup.getId());
+        if (dates.isEmpty()) {
+            showInfo("No hay historial de asistencia para este grupo");
+            return;
+        }
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Historial de Asistencia - " + selectedGroup.getName());
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
+
+        // Left: lista de fechas, Right: tabla de asistencia
+        HBox content = new HBox(10);
+        content.setPrefSize(700, 400);
+
+        ListView<java.sql.Date> datesList = new ListView<>();
+        datesList.getItems().addAll(dates);
+
+        // Formateador para mostrar fechas legibles
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        datesList.setCellFactory(lv -> new javafx.scene.control.ListCell<java.sql.Date>() {
+            @Override
+            protected void updateItem(java.sql.Date item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) setText(null);
+                else setText(sdf.format(new java.util.Date(item.getTime())));
+            }
+        });
+
+        TableView<Attendance> attendanceTable = new TableView<>();
+        TableColumn<Attendance, String> nameCol = new TableColumn<>("Alumno");
+        nameCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getStudentName()));
+        nameCol.setPrefWidth(300);
+
+        TableColumn<Attendance, String> statusCol = new TableColumn<>("Estado");
+        statusCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getStatus()));
+        statusCol.setPrefWidth(150);
+
+        TableColumn<Attendance, java.util.Date> dateCol = new TableColumn<>("Fecha");
+        dateCol.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getAttendanceDate()));
+        dateCol.setPrefWidth(200);
+
+        attendanceTable.getColumns().addAll(nameCol, statusCol, dateCol);
+
+        datesList.getSelectionModel().selectedItemProperty().addListener((obs, oldD, newD) -> {
+            if (newD != null) {
+                List<Attendance> list = attendanceDAO.getAttendanceByGroup(selectedGroup.getId(), newD);
+                attendanceTable.getItems().setAll(list);
+            }
+        });
+
+        // select first by default and force load
+        if (!dates.isEmpty()) {
+            datesList.getSelectionModel().select(0);
+            java.sql.Date first = datesList.getSelectionModel().getSelectedItem();
+            if (first != null) {
+                List<Attendance> list = attendanceDAO.getAttendanceByGroup(selectedGroup.getId(), first);
+                attendanceTable.getItems().setAll(list);
+            }
+        }
+
+        content.getChildren().addAll(datesList, attendanceTable);
+        dialog.getDialogPane().setContent(content);
+        dialog.showAndWait();
     }
 
     private void showError(String message) {

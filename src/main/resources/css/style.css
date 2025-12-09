@@ -1,7 +1,7 @@
 /* Paleta seria: azul marino y grises */
 .root {
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
-    -fx-background-color: #f2f4f7;
+    -fx-background-color: #ffffff; /* Blanco como fondo general */
 }
 
 /* Login Container */
@@ -88,9 +88,20 @@
     -fx-font-size: 12px;
 }
 
+.muted-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #334e5c;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 12px;
+}
+
+.muted-button:hover {
+    -fx-background-color: rgba(34,87,122,0.06);
+}
+
 /* Dashboard adjustments */
 .dashboard-container {
-    -fx-background-color: #f2f4f7;
+    -fx-background-color: #ffffff; /* fondo general blanco para el contenedor */
 }
 
 .header {
@@ -108,10 +119,10 @@
 }
 
 .section {
-    -fx-background-color: white;
+    -fx-background-color: #f5f7f9; /* gris muy claro */
     -fx-background-radius: 10px;
     -fx-padding: 20px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 8, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 4);
 }
 
 .section-title {
@@ -120,24 +131,35 @@
 }
 
 .list-view {
-    -fx-background-color: white;
+    -fx-background-color: #eef2f5; /* gris suave */
     -fx-border-color: #e6eef3;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
 
 .list-view .list-cell {
-    -fx-background-color: white;
+    -fx-background-color: transparent; /* celda transparente para ver el gris del contenedor */
     -fx-text-fill: #1f2d33;
     -fx-padding: 10px;
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #e9f3f7;
+    -fx-background-color: #e1eef4;
     -fx-text-fill: #0b263b;
 }
 
-.table-view .column-header {
+.table-view {
+    -fx-background-color: #eef2f5; /* mismo gris suave */
+    -fx-border-color: #e1e8eb;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .table-column-header-background {
     -fx-background-color: #e9f3f7;
     -fx-text-fill: #0b263b;
     -fx-font-weight: bold;

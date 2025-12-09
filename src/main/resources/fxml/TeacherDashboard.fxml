@@ -75,6 +75,7 @@
                     <Button fx:id="addStudentButton" text="Agregar Alumno" onAction="#handleAddStudent" styleClass="primary-button"/>
                     <Button fx:id="removeStudentButton" text="Eliminar Alumno" onAction="#handleRemoveStudent" styleClass="danger-button"/>
                     <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="viewHistoryButton" text="Historial" onAction="#handleViewHistory" styleClass="muted-button" />
                     <Button fx:id="takeAttendanceButton" text="Pasar Lista" onAction="#handleTakeAttendance" styleClass="success-button"/>
                 </HBox>
             </VBox>
