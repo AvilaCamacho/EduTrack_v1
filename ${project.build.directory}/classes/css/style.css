@@ -1,0 +1,224 @@
+/* Paleta seria: azul marino y grises */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-background-color: #ffffff; /* Blanco como fondo general */
+}
+
+/* Login Container */
+.login-container {
+    -fx-background-color: linear-gradient(to bottom right, #eef2f6 0%, #dde4ea 100%);
+    -fx-min-width: 600px; /* reducir para permitir reflow en pantallas pequeñas */
+    -fx-min-height: 400px;
+}
+
+/* Card */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 14, 0, 0, 6);
+    -fx-padding: 24px;
+}
+
+.card-title {
+    -fx-text-fill: #0b263b; /* azul oscuro */
+    -fx-font-weight: bold;
+}
+
+.card-subtitle {
+    -fx-text-fill: #4a6572; /* gris azulado */
+}
+
+.field-label {
+    -fx-text-fill: #334e5c;
+    -fx-font-weight: 600;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #d7dee4;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #22577a; /* acento azul */
+    -fx-border-width: 2px;
+}
+
+.primary-button {
+    -fx-background-color: #22577a;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px 24px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1b4154;
+}
+
+.primary-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.danger-button {
+    -fx-background-color: #b23b3b;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+}
+
+.success-button {
+    -fx-background-color: #2b9348;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+}
+
+.message-label {
+    -fx-text-fill: #b23b3b; /* rojo suave por defecto para errores */
+    -fx-font-size: 13px;
+    -fx-padding: 6px 0 0 0;
+}
+
+.muted-text {
+    -fx-text-fill: #8b98a6;
+    -fx-font-size: 12px;
+}
+
+.muted-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #334e5c;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 12px;
+}
+
+.muted-button:hover {
+    -fx-background-color: rgba(34,87,122,0.06);
+}
+
+/* Dashboard adjustments */
+.dashboard-container {
+    -fx-background-color: #ffffff; /* fondo general blanco para el contenedor */
+}
+
+.header {
+    -fx-background-color: linear-gradient(to right, #0b263b 0%, #22577a 100%);
+    -fx-padding: 20px;
+}
+
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.header-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+.section {
+    -fx-background-color: #f5f7f9; /* gris muy claro */
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 4);
+}
+
+.section-title {
+    -fx-text-fill: #23303a;
+    -fx-font-weight: bold;
+}
+
+.list-view {
+    -fx-background-color: #eef2f5; /* gris suave */
+    -fx-border-color: #e6eef3;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent; /* celda transparente para ver el gris del contenedor */
+    -fx-text-fill: #1f2d33;
+    -fx-padding: 10px;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #e1eef4;
+    -fx-text-fill: #0b263b;
+}
+
+.table-view {
+    -fx-background-color: #eef2f5; /* mismo gris suave */
+    -fx-border-color: #e1e8eb;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .table-column-header-background {
+    -fx-background-color: #e9f3f7;
+    -fx-text-fill: #0b263b;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #f0fbff;
+}
+
+/* Styles for disabled controls */
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* Small utility */
+.centered-label {
+    -fx-alignment: CENTER;
+}
+
+/* Additional button size and stronger hover/pressed visuals */
+.primary-button.large {
+    -fx-padding: 14px 26px;
+    -fx-font-size: 15px;
+    -fx-min-width: 140px;
+    -fx-background-radius: 10px;
+}
+
+.danger-button.large {
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-min-width: 120px;
+    -fx-background-radius: 10px;
+}
+
+.success-button.large {
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-min-width: 120px;
+    -fx-background-radius: 10px;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(11,38,59,0.28), 14, 0, 0, 6);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 2);
+    -fx-translate-y: 0px;
+}
+
+/* Slight white overlay on hover for contrast */
+.primary-button:hover, .success-button:hover, .danger-button:hover {
+    -fx-background-insets: 0, 1;
+    -fx-background-color: linear-gradient(to bottom, derive(#0b66a3,20%) 0%, derive(#075985,-6%) 100%);
+}
+
+/* Focus glow */
+.button:focused {
+    -fx-effect: dropshadow(gaussian, rgba(11,102,164,0.28), 18, 0, 0, 8);
+}

@@ -4,6 +4,16 @@ Sistema de Gestión Educativa - Aplicación de escritorio JavaFX con base de dat
 
 ## Descripción
 
+El propósito de este proyecto es desarrollar, mediante JavaFX, un sistema de registro de asistencia escolar que permita a los docentes gestionar de forma práctica y eficiente la asistencia de sus alumnos.
+
+El sistema facilitará el control diario registrando tres estados posibles: presente, ausente y retardo, además de permitir al docente administrar grupos y alumnos mediante operaciones CRUD.
+
+Una vez registrada la asistencia, la aplicación mostrará una pestaña de estadísticas donde el docente podrá visualizar de manera clara y gráfica los porcentajes de asistencia, ausencias y retardos de cada grupo. Estas estadísticas permitirán comprender el comportamiento de los alumnos sin necesidad de generar archivos externos.
+
+El objetivo es ofrecer una herramienta intuitiva, ágil y visualmente clara para apoyar la organización y el seguimiento académico dentro del aula.
+
+## Características
+
 EduTrack es una aplicación de escritorio desarrollada en JavaFX que permite la gestión educativa con dos tipos de usuarios:
 
 - **Maestros**: Pueden crear grupos, gestionar alumnos y pasar lista de asistencia
@@ -139,7 +149,7 @@ EduTrack_v1/
 │           ├── fxml/                       # Archivos de interfaz
 │           │   ├── Login.fxml
 │           │   ├── TeacherDashboard.fxml
-│           │   └── StudentDashboard.fxml
+│           │   │   └── StudentDashboard.fxml
 │           ├── css/                        # Estilos CSS
 │           │   └── style.css
 │           ├── wallet/                     # Wallet de Oracle Cloud

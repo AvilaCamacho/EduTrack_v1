@@ -2,24 +2,30 @@ package com.edutrack.controller;
 
 import com.edutrack.database.AttendanceDAO;
 import com.edutrack.database.GroupDAO;
+import com.edutrack.database.GroupStudentDAO;
 import com.edutrack.model.Attendance;
 import com.edutrack.model.Group;
+import com.edutrack.model.GroupStudent;
 import com.edutrack.model.User;
 import com.edutrack.util.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Optional;
 
 public class StudentDashboardController {
 
     @FXML
     private Label welcomeLabel;
+
+    @FXML
+    private Accordion mainAccordion;
 
     @FXML
     private ListView<Group> groupListView;
@@ -87,11 +93,13 @@ public class StudentDashboardController {
 
     private final GroupDAO groupDAO;
     private final AttendanceDAO attendanceDAO;
+    private final GroupStudentDAO groupStudentDAO;
     private User currentUser;
 
     public StudentDashboardController() {
         groupDAO = new GroupDAO();
         attendanceDAO = new AttendanceDAO();
+        groupStudentDAO = new GroupStudentDAO();
     }
 
     @FXML
@@ -200,7 +208,7 @@ public class StudentDashboardController {
             long total = atts.size();
             long present = atts.stream().filter(Attendance::isPresent).count();
             return (int) Math.round((present * 100.0) / total);
-        }).filter(p -> p != null).collect(Collectors.toList());
+        }).filter(Objects::nonNull).toList();
 
         if (percents.isEmpty()) {
             groupAverageLabel.setText("--");
@@ -258,7 +266,7 @@ public class StudentDashboardController {
 
     private void handleLogout() {
         // placeholder: limpiar sesión y volver al login
-        SessionManager.getInstance().clear();
+        SessionManager.getInstance().clearSession();
         // lógica para volver a la pantalla de login normalmente la realiza la clase Main
     }
 
@@ -282,16 +290,67 @@ public class StudentDashboardController {
             return;
         }
         // Simulación: alternar inscripción
-        boolean enrolled = groupDAO.isStudentInGroup(currentUser.getId(), g.getId());
+        boolean enrolled = isStudentInGroup(currentUser.getId(), g.getId());
         if (enrolled) {
-            groupDAO.removeStudentFromGroup(currentUser.getId(), g.getId());
-            Alert a = new Alert(Alert.AlertType.INFORMATION, "Has salido del grupo.", ButtonType.OK);
-            a.showAndWait();
+            // buscar el record en group_students para borrado
+            List<GroupStudent> students = groupStudentDAO.getStudentsByGroup(g.getId());
+            Optional<GroupStudent> found = students.stream().filter(s -> s.getStudentId() == currentUser.getId()).findFirst();
+            if (found.isPresent()) {
+                groupStudentDAO.removeStudentFromGroup(found.get().getId());
+                Alert a = new Alert(Alert.AlertType.INFORMATION, "Has salido del grupo.", ButtonType.OK);
+                a.showAndWait();
+            } else {
+                Alert a = new Alert(Alert.AlertType.WARNING, "No se encontró la inscripción para eliminar.", ButtonType.OK);
+                a.showAndWait();
+            }
         } else {
-            groupDAO.addStudentToGroup(currentUser.getId(), g.getId());
-            Alert a = new Alert(Alert.AlertType.INFORMATION, "Te has unido al grupo.", ButtonType.OK);
-            a.showAndWait();
+            boolean added = groupStudentDAO.addStudentToGroup(g.getId(), currentUser.getId());
+            if (added) {
+                Alert a = new Alert(Alert.AlertType.INFORMATION, "Te has unido al grupo.", ButtonType.OK);
+                a.showAndWait();
+            } else {
+                Alert a = new Alert(Alert.AlertType.ERROR, "No se pudo unir al grupo.", ButtonType.OK);
+                a.showAndWait();
+            }
         }
         loadGroups();
+    }
+
+    private boolean isStudentInGroup(int studentId, int groupId) {
+        List<GroupStudent> students = groupStudentDAO.getStudentsByGroup(groupId);
+        if (students == null) return false;
+        return students.stream().anyMatch(s -> s.getStudentId() == studentId);
+    }
+
+    private boolean isStyleStored(javafx.scene.control.Button b) {
+        return b.getProperties().containsKey("origStyle");
+    }
+
+    @FXML
+    private void buttonMouseEntered(MouseEvent event) {
+        if (event == null) return;
+        if (event.getSource() instanceof javafx.scene.control.Button) {
+            javafx.scene.control.Button b = (javafx.scene.control.Button) event.getSource();
+            // store original style if not stored
+            if (!isStyleStored(b)) {
+                b.getProperties().put("origStyle", b.getStyle() != null ? b.getStyle() : "");
+            }
+            // append hover style (underline/neon glow)
+            String hoverStyle = "; -fx-border-color: transparent transparent rgba(9,180,255,0.85) transparent; -fx-translate-y: -2; -fx-effect: dropshadow(gaussian, rgba(9,180,255,0.32), 18, 0, 0, 8);";
+            b.setStyle((b.getStyle() != null ? b.getStyle() : "") + hoverStyle);
+        }
+    }
+
+    @FXML
+    private void buttonMouseExited(MouseEvent event) {
+        if (event == null) return;
+        if (event.getSource() instanceof javafx.scene.control.Button) {
+            javafx.scene.control.Button b = (javafx.scene.control.Button) event.getSource();
+            Object orig = b.getProperties().get("origStyle");
+            if (orig != null) {
+                b.setStyle(orig.toString());
+                b.getProperties().remove("origStyle");
+            }
+        }
     }
 }

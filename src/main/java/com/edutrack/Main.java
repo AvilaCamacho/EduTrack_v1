@@ -19,24 +19,78 @@ public class Main extends Application {
             // Load database configuration
             loadDatabaseConfig();
 
+            // Intenta precargar los FXML principales para detectar errores tempranos
+            preloadFxml("/fxml/StudentDashboard.fxml");
+            preloadFxml("/fxml/TeacherDashboard.fxml");
+
+            // Si se pasa la propiedad edutrack.debugOpenStudent=true, abrir directamente el StudentDashboard (debug)
+            String debugOpen = System.getProperty("edutrack.debugOpenStudent");
+            if ("true".equalsIgnoreCase(debugOpen)) {
+                try {
+                    System.out.println("Debug mode: opening StudentDashboard directly");
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/StudentDashboard.fxml"));
+                    Parent rootDebug = loader.load();
+                    Scene sceneDebug = new Scene(rootDebug);
+                    if (getClass().getResource("/css/style.css") != null) sceneDebug.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+                    primaryStage.setScene(sceneDebug);
+                    primaryStage.setTitle("EduTrack - Debug Student");
+                    primaryStage.setMaximized(true);
+                    primaryStage.show();
+                    return; // ya mostramos la ventana
+                } catch (Throwable t) {
+                    System.err.println("Failed to open StudentDashboard in debug mode: " + t.getMessage());
+                    t.printStackTrace();
+                    // continuar y cargar login como fallback
+                }
+            }
+
             // Load the login screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
+            // Establecer tamaño inicial amplio y consistente con el diseño
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
             primaryStage.setTitle("EduTrack - Sistema de Gestión Educativa");
             primaryStage.setScene(scene);
             primaryStage.setResizable(true); // permitir redimensionar
-            primaryStage.setWidth(900); // tamaño inicial razonable
-            primaryStage.setHeight(600);
+            primaryStage.setWidth(1280); // tamaño inicial para dashboard
+            primaryStage.setHeight(800);
+            // Establecer min size para evitar compresión
+            primaryStage.setMinWidth(1024);
+            primaryStage.setMinHeight(720);
             primaryStage.centerOnScreen();
             primaryStage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error starting application: " + e.getMessage());
+        }
+    }
+
+    private void preloadFxml(String resourcePath) {
+        try {
+            java.net.URL res = getClass().getResource(resourcePath);
+            if (res == null) {
+                System.err.println("Preload: resource not found on classpath: " + resourcePath);
+                // try filesystem fallback for IDE
+                File f = new File("src/main/resources" + resourcePath);
+                if (f.exists()) {
+                    System.out.println("Preload: found on filesystem: " + f.getAbsolutePath());
+                    res = f.toURI().toURL();
+                } else {
+                    System.err.println("Preload: resource also not found on filesystem: " + f.getAbsolutePath());
+                    return;
+                }
+            }
+            System.out.println("Preloading FXML: " + resourcePath + " from " + res.toExternalForm());
+            FXMLLoader loader = new FXMLLoader(res);
+            Parent p = loader.load();
+            System.out.println("Preloaded OK: " + resourcePath);
+        } catch (Throwable t) {
+            System.err.println("Error preloading FXML: " + resourcePath + " -> " + t.getMessage());
+            t.printStackTrace();
         }
     }
 

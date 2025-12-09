@@ -9,9 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
 
 public class LoginController {
 
@@ -27,7 +32,7 @@ public class LoginController {
     @FXML
     private Label messageLabel;
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public LoginController() {
         userDAO = new UserDAO();
@@ -82,21 +87,61 @@ public class LoginController {
     }
 
     private void openDashboard(User user) {
-        try {
-            String fxmlFile = user.getUserType() == User.UserType.TEACHER
+        String fxmlFile = user.getUserType() == User.UserType.TEACHER
                 ? "/fxml/TeacherDashboard.fxml"
                 : "/fxml/StudentDashboard.fxml";
 
-            java.net.URL resource = getClass().getResource(fxmlFile);
-            if (resource == null) {
-                showError("Archivo FXML no encontrado: " + fxmlFile);
-                System.err.println("Resource not found for: " + fxmlFile);
+        // Preferir cargar por URL (classpath) para que las rutas relativas en FXML se resuelvan correctamente
+        URL resourceUrl = getClass().getResource(fxmlFile);
+        Parent root = null;
+        try {
+            if (resourceUrl != null) {
+                FXMLLoader loader = new FXMLLoader(resourceUrl);
+                root = loader.load();
+            } else {
+                // Intentar desde filesystem (IDE)
+                java.io.File file = new java.io.File("src/main/resources" + fxmlFile);
+                if (file.exists()) {
+                    URL fileUrl = file.toURI().toURL();
+                    System.out.println("Found FXML on filesystem at: " + file.getAbsolutePath());
+                    FXMLLoader loader = new FXMLLoader(fileUrl);
+                    root = loader.load();
+                } else {
+                    showError("Archivo FXML no encontrado: " + fxmlFile);
+                    openFallbackDashboard();
+                    return;
+                }
+            }
+        } catch (Throwable t) {
+            // fallo al cargar FXML -> intentar fallback alternativo y mostrar traza completa
+            t.printStackTrace();
+            showError("Error al cargar el panel de control. Se abrirá una vista de emergencia.");
+
+            // mostrar un Alert con la stacktrace para debugging
+            StringWriter sw = new StringWriter();
+            t.printStackTrace(new PrintWriter(sw));
+            String exceptionText = sw.toString();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error al cargar FXML");
+            alert.setHeaderText("Ocurrió un error al cargar: " + fxmlFile);
+            TextArea textArea = new TextArea(exceptionText);
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+            textArea.setMaxWidth(Double.MAX_VALUE);
+            textArea.setMaxHeight(Double.MAX_VALUE);
+            alert.getDialogPane().setExpandableContent(textArea);
+            alert.showAndWait();
+
+            openFallbackDashboard();
+            return;
+        }
+
+        try {
+            if (root == null) {
+                showError("No se pudo preparar la vista para mostrar");
                 return;
             }
-
-            FXMLLoader loader = new FXMLLoader(resource);
-            Parent root = loader.load();
-
             Stage stage = (Stage) loginButton.getScene().getWindow();
             Scene scene = new Scene(root);
             java.net.URL css = getClass().getResource("/css/style.css");
@@ -106,15 +151,35 @@ public class LoginController {
             stage.setScene(scene);
             stage.setTitle("EduTrack - " + (user.getUserType() == User.UserType.TEACHER ? "Maestro" : "Alumno"));
             stage.setResizable(true);
-            // Maximizar la ventana para que la pantalla se auto acomode
             stage.setMaximized(true);
             stage.centerOnScreen();
             stage.show();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showError("Error al cargar el panel de control: " + e.getMessage());
+            showError("Error al mostrar el panel de control: " + e.getMessage());
         }
+    }
+
+    private void openFallbackDashboard() {
+        // Construir una UI mínima y estética para que el usuario pueda continuar
+        BorderPane root = new BorderPane();
+        VBox center = new VBox(12);
+        Text title = new Text("EduTrack - Demo Dashboard");
+        title.setStyle("-fx-font-size:24px; -fx-fill: linear-gradient(#CFEFFF, #9FDFFF);");
+        Text info = new Text("No se pudo cargar la vista completa. Esta es una versión de emergencia.");
+        info.setStyle("-fx-fill: #9fbfd0;");
+        center.getChildren().addAll(title, info);
+        root.setCenter(center);
+
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        Scene scene = new Scene(root, 1000, 700);
+        java.net.URL css = getClass().getResource("/css/student-dashboard.css");
+        if (css != null) scene.getStylesheets().add(css.toExternalForm());
+        stage.setScene(scene);
+        stage.setTitle("EduTrack - Demo");
+        stage.setMaximized(true);
+        stage.show();
     }
 
     private void showError(String message) {
